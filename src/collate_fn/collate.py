@@ -10,36 +10,33 @@ def collate_fn(dataset_items: List[dict]):
     Collate and pad fields in dataset items
     """
 
-    
-    spec_lengths = []
-    text_encoded_length = []
+    mix_lengths = []
+    ref_lengths = []
+    target_lengths = []
+
     for ds in dataset_items:
-        spec_lengths.append(ds['spectrogram'].shape[-1])
-        text_encoded_length.append(ds['text_encoded'].shape[-1])
+        mix_lengths.append(ds['audio_mix'].shape[-1])
+        ref_lengths.append(ds['audio_ref'].shape[-1])
+        target_lengths.append(ds['audio_target'].shape[-1])
 
-    spec_dim = dataset_items[0]['spectrogram'].shape[1]
-    batch_spectrogram = torch.zeros(len(spec_lengths), spec_dim, max(spec_lengths))
-    batch_encoded_text = torch.zeros(len(text_encoded_length), max(text_encoded_length))
+    batch_mix = torch.zeros(len(mix_lengths), max(mix_lengths))
+    batch_ref = torch.zeros(len(ref_lengths), max(ref_lengths))
+    batch_target = torch.zeros(len(mix_lengths), max(mix_lengths))
 
-    texts = []
-    audio_path = []
-    audio = []
     for i, ds in enumerate(dataset_items):
-        batch_spectrogram[i, :, :spec_lengths[i]] = ds['spectrogram']
-        batch_encoded_text[i, :text_encoded_length[i]] = ds['text_encoded']
-        texts.append(ds['text'])
-        audio_path.append(ds['audio_path'])
-        audio.append(ds['audio'])
+        batch_mix[i, :mix_lengths[i]] = ds['audio_mix']
+        batch_ref[i, :ref_lengths[i]] = ds['audio_ref']
+        batch_target[i, :target_lengths[i]] = ds['audio_target']
 
-    text_encoded_length = torch.tensor(text_encoded_length).long()
-    spec_lengths = torch.tensor(spec_lengths).long()
+    mix_lengths = torch.tensor(mix_lengths).long()
+    ref_lengths = torch.tensor(ref_lengths).long()
+    target_lengths = torch.tensor(target_lengths).long()
 
     return {
-        'spectrogram': batch_spectrogram,
-        'spectrogram_length': spec_lengths,
-        'text_encoded': batch_encoded_text,
-        'text_encoded_length': text_encoded_length,
-        'text': texts,
-        'audio_path': audio_path,
-        'audio': audio
+        'mix': batch_mix,
+        'ref': batch_ref,
+        'target': batch_target,
+        'mix_lengths': mix_lengths,
+        'ref_lengths': ref_lengths,
+        'target_lengths': target_lengths
     }

@@ -1,10 +1,5 @@
-from hw_asr.metric.cer_metric import ArgmaxCERMetric, BeamsearchCERMetric
-from hw_asr.metric.wer_metric import ArgmaxWERMetric, BeamsearchWERMetric, LMBeamsearchWERMetric
+from src.metric.si_sdr import SI_SDR
 
 __all__ = [
-    "ArgmaxWERMetric",
-    "ArgmaxCERMetric",
-    "BeamsearchCERMetric",
-    "BeamsearchWERMetric",
-    "BeamsearchWERMetric"
+    "SI_SDR",
 ]

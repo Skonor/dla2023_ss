@@ -1,8 +1,8 @@
 import torch_audiomentations
 from torch import Tensor
 
-from hw_asr.augmentations.base import AugmentationBase
-from hw_asr.augmentations.random_apply import RandomApply
+from src.augmentations.base import AugmentationBase
+from src.augmentations.random_apply import RandomApply
 
 
 class PitchShift(AugmentationBase):

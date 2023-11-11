@@ -2,52 +2,44 @@
   "name": "one_batch_test",
   "n_gpu": 1,
   "preprocessing": {
-    "sr": 16000,
-    "spectrogram": {
-      "type": "MelSpectrogram",
-      "args": {
-      }
-    },
-    "log_spec": true
+    "sr": 16000
   },
   "augmentations": {
-    "wave": [],
-    "spectrogram": []
+    "wave": []
   },
   "arch": {
     "type": "BaselineModel",
     "args": {
-      "n_feats": 128,
-      "fc_hidden": 512
+      "fc_hidden": 2
     }
   },
   "data": {
     "train": {
-      "batch_size": 10,
+      "batch_size": 3,
       "num_workers": 0,
       "datasets": [
         {
-          "type": "LibrispeechDataset",
+          "type": "CustomDirAudioDataset",
           "args": {
-            "part": "dev-clean",
-            "max_audio_length": 20.0,
-            "max_text_length": 200,
-            "limit": 10
+            "mix_dir": "data/datasets/LibriSpeechMixVal/mix",
+            "ref_dir":  "data/datasets/LibriSpeechMixVal/ref",
+            "target_dir": "data/datasets/LibriSpeechMixVal/target",
+            "limit": 3
           }
         }
       ]
     },
     "val": {
-      "batch_size": 10,
+      "batch_size": 3,
       "num_workers": 0,
       "datasets": [
         {
-          "type": "LibrispeechDataset",
+          "type": "CustomDirAudioDataset",
           "args": {
-            "part": "dev-clean",
-            "max_audio_length": 20.0,
-            "max_text_length": 200,
-            "limit": 10
+            "mix_dir": "data/datasets/LibriSpeechMixVal/mix",
+            "ref_dir":  "data/datasets/LibriSpeechMixVal/ref",
+            "target_dir": "data/datasets/LibriSpeechMixVal/target",
+            "limit": 3
           }
         }
       ]
@@ -60,20 +52,14 @@
     }
   },
   "loss": {
-    "type": "CTCLoss",
+    "type": "SpexPlusLossNoCe",
     "args": {}
   },
   "metrics": [
     {
-      "type": "ArgmaxWERMetric",
+      "type": "SI_SDR",
       "args": {
-        "name": "WER (argmax)"
-      }
-    },
-    {
-      "type": "ArgmaxCERMetric",
-      "args": {
-        "name": "CER (argmax)"
+        "name": "SiSdr"
       }
     }
   ],
@@ -81,21 +67,21 @@
     "type": "OneCycleLR",
     "args": {
       "steps_per_epoch": 100,
-      "epochs": 50,
+      "epochs": 10,
       "anneal_strategy": "cos",
       "max_lr": 1e-2,
       "pct_start": 0.2
     }
   },
   "trainer": {
-    "epochs": 50,
+    "epochs": 10,
     "save_dir": "saved/",
     "save_period": 5,
     "verbosity": 2,
     "monitor": "min val_loss",
     "early_stop": 100,
     "visualize": "wandb",
-    "wandb_project": "asr_project",
+    "wandb_project": "ss_project",
     "len_epoch": 100,
     "grad_norm_clip": 10
   }
