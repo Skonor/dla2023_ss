@@ -9,12 +9,13 @@ pandas
 speechbrain~=0.5.12
 datasets
 torch_audiomentations
-editdistance
 wandb
-pyctcdecode
 torchaudio~=0.11.0
+librosa
+pyloudnorm
+soundfile
+pesq
+torchmetrics
 pillow
 wget
 gdown
-
-https://github.com/kpu/kenlm/archive/master.zip
