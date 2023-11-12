@@ -19,5 +19,8 @@ class PESQ(BaseMetric):
         common_len = min(s1.shape[-1], target.shape[-1])
         target = target[:, :common_len]
         s1 = s1[:, :common_len]
-        return self.pesq(s1, target).sum()
+        try:
+            return self.pesq(s1, target).mean()
+        except:
+            return torch.tensor(-0.5)
     
