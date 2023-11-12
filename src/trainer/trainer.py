@@ -188,14 +188,23 @@ class Trainer(BaseTrainer):
 
     def _log_predictions(
             self,
-            examples_to_log=10,
+            mix,
+            target,
+            s1,
+            examples_to_log=3,
             *args,
             **kwargs,
-    ):
-        pass
-        
-        if self.writer is None:
-            return
+    ):        
+        tuples = list(zip(mix, s1, target))
+        shuffle(tuples)
+        rows = {}
+        for i, (mix_, s1_, target_) in enumerate(tuples[:examples_to_log]):
+            rows[i] = {
+                "mix": self.writer.wandb.Audio(mix_.detach().cpu().squeeze().numpy(), sample_rate=16000), 
+                "pred_s1": self.writer.wandb.Audio(s1_.detach().cpu().squeeze().numpy(), sample_rate=16000),
+                "target": self.writer.wandb.Audio(target_.detach().cpu().squeeze().numpy(), sample_rate=16000),
+            }
+        self.writer.add_table("predictions", pd.DataFrame.from_dict(rows, orient="index"))
 
 
     @torch.no_grad()

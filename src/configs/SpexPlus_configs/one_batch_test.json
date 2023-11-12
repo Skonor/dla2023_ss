@@ -1,0 +1,90 @@
+{
+  "name": "one_batch_test",
+  "n_gpu": 1,
+  "preprocessing": {
+    "sr": 16000
+  },
+  "augmentations": {
+    "wave": []
+  },
+  "arch": {
+    "type": "SpEx_Plus",
+    "args": {
+      "num_speakers": 100
+    }
+  },
+  "data": {
+    "train": {
+      "batch_size": 1,
+      "num_workers": 0,
+      "datasets": [
+        {
+          "type": "CustomDirAudioDataset",
+          "args": {
+            "is_test": 0,
+            "mix_dir": "data/datasets/LibriMixesTest/train/mix",
+            "ref_dir":  "data/datasets/LibriMixesTest/train/refs",
+            "target_dir": "data/datasets/LibriMixesTest/train/targets",
+            "limit": 1
+          }
+        }
+      ]
+    },
+    "val": {
+      "batch_size": 1,
+      "num_workers": 0,
+      "datasets": [
+        {
+          "type": "CustomDirAudioDataset",
+          "args": {
+            "is_test": 1,
+            "mix_dir": "data/datasets/LibriMixesTest/val/mix",
+            "ref_dir":  "data/datasets/LibriMixesTest/val/refs",
+            "target_dir": "data/datasets/LibriMixesTest/val/targets",
+            "limit": 1
+          }
+        }
+      ]
+    }
+  },
+  "optimizer": {
+    "type": "SGD",
+    "args": {
+      "lr": 1e-2
+    }
+  },
+  "loss": {
+    "type": "SpexPlusLoss",
+    "args": {}
+  },
+  "metrics": [
+    {
+      "type": "SI_SDR",
+      "args": {
+        "name": "SiSdr"
+      }
+    }
+  ],
+  "lr_scheduler": {
+    "type": "OneCycleLR",
+    "args": {
+      "steps_per_epoch": 100,
+      "epochs": 10,
+      "anneal_strategy": "cos",
+      "max_lr": 1e-2,
+      "pct_start": 0.2
+    }
+  },
+  "trainer": {
+    "epochs": 10,
+    "save_dir": "saved/",
+    "save_period": 5,
+    "verbosity": 2,
+    "monitor": "min val_loss",
+    "early_stop": 100,
+    "visualize": "wandb",
+    "wandb_project": "ss_project",
+    "len_epoch": 100,
+    "grad_norm_clip": 10
+  }
+}
