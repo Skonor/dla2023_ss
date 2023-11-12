@@ -231,7 +231,7 @@ class MixtureGenerator:
                 if (i + 1) % max(self.nfiles // update_steps, 1) == 0:
                     print(f"Files Processed | {i + 1} out of {self.nfiles}")
 
-def main(num_speakers, train_nfiles, val_nflies):
+def main(num_speakers, train_nfiles, val_nfiles):
 
     path_val = 'data/datasets/librispeech/test-clean/'
     path_train = 'data/datasets/librispeech/train-clean-100/'
@@ -253,7 +253,7 @@ def main(num_speakers, train_nfiles, val_nflies):
 
     mixer_val = MixtureGenerator(speakers_files_val,
                              path_mixture_val,
-                             nfiles=val_nflies,
+                             nfiles=val_nfiles,
                              test=True)
     
 

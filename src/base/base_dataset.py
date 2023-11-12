@@ -55,7 +55,7 @@ class BaseDataset(Dataset):
             "audio_path_mix": audio_path_mix,
             "audio_path_ref": audio_path_ref,
             "audio_path_target": audio_path_target,
-            'speaker_id': data_dict['speaker_id']
+            'speaker': data_dict['speaker']
         }
 
     @staticmethod

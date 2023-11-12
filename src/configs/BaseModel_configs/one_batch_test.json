@@ -10,6 +10,7 @@
   "arch": {
     "type": "BaselineModel",
     "args": {
+      "num_speakers": 100,
       "fc_hidden": 2
     }
   },
@@ -21,9 +22,10 @@
         {
           "type": "CustomDirAudioDataset",
           "args": {
-            "mix_dir": "data/datasets/LibriSpeechMixVal/mix",
-            "ref_dir":  "data/datasets/LibriSpeechMixVal/ref",
-            "target_dir": "data/datasets/LibriSpeechMixVal/target",
+            "is_test": 0,
+            "mix_dir": "data/datasets/LibriMixesTest/train/mix",
+            "ref_dir":  "data/datasets/LibriMixesTest/train/refs",
+            "target_dir": "data/datasets/LibriMixesTest/train/targets",
             "limit": 3
           }
         }
@@ -36,9 +38,10 @@
         {
           "type": "CustomDirAudioDataset",
           "args": {
-            "mix_dir": "data/datasets/LibriSpeechMixVal/mix",
-            "ref_dir":  "data/datasets/LibriSpeechMixVal/ref",
-            "target_dir": "data/datasets/LibriSpeechMixVal/target",
+            "is_test": 1,
+            "mix_dir": "data/datasets/LibriMixesTest/val/mix",
+            "ref_dir":  "data/datasets/LibriMixesTest/val/refs",
+            "target_dir": "data/datasets/LibriMixesTest/val/targets",
             "limit": 3
           }
         }
@@ -52,7 +55,7 @@
     }
   },
   "loss": {
-    "type": "SpexPlusLossNoCe",
+    "type": "SpexPlusLoss",
     "args": {}
   },
   "metrics": [

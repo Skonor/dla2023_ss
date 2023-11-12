@@ -11,6 +11,8 @@ logger = logging.getLogger(__name__)
 class CustomAudioDataset(BaseDataset):
     def __init__(self, data, *args, **kwargs):
         index = data
+        speakers_class = {}
+        num_speakers = -1
         for entry in data:
             assert "path_mix" in entry
             assert "path_ref" in entry
@@ -29,5 +31,14 @@ class CustomAudioDataset(BaseDataset):
             entry["path_target"] = str(Path(entry["path_target"]).absolute().resolve())
             t_info = torchaudio.info(entry["path_target"])
             entry["audio_len_target"] = t_info.num_frames / t_info.sample_rate
+
+            assert "speaker_id" in entry
+            speaker_id = entry["speaker_id"]
+            if speaker_id in speakers_class:
+                entry["speaker"] = speakers_class[speaker_id]
+            else:
+                num_speakers += 1
+                speakers_class[speaker_id] = num_speakers
+                entry["speaker"] = speakers_class[speaker_id]
 
         super().__init__(index, *args, **kwargs)

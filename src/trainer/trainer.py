@@ -59,7 +59,7 @@ class Trainer(BaseTrainer):
         """
         Move all necessary tensors to the HPU
         """
-        for tensor_for_gpu in ["mix", "ref", "target"]:
+        for tensor_for_gpu in ["mix", "ref", "target", "speaker", "ref_lengths"]:
             batch[tensor_for_gpu] = batch[tensor_for_gpu].to(device)
         return batch
 
@@ -140,10 +140,11 @@ class Trainer(BaseTrainer):
             self.optimizer.step()
             if self.lr_scheduler is not None:
                 self.lr_scheduler.step()
-
-        metrics.update("loss", batch["loss"].item())
+                
+        batch_size = batch['mix'].shape[0]
+        metrics.update("loss", batch["loss"].item(), n=batch_size)
         for met in self.metrics:
-            metrics.update(met.name, met(**batch))
+            metrics.update(met.name, met(**batch), n=batch_size)
         return batch
 
     def _evaluation_epoch(self, epoch, part, dataloader):
@@ -195,7 +196,7 @@ class Trainer(BaseTrainer):
         
         if self.writer is None:
             return
-        
+
 
     @torch.no_grad()
     def get_grad_norm(self, norm_type=2):
