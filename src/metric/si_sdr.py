@@ -13,4 +13,6 @@ class SI_SDR(BaseMetric):
         self.si_sdr = si_sdr()
 
     def __call__(self, s1: Tensor, target: Tensor, **kwargs):
+        device = s1.get_device()
+        self.si_sdr.to(device)
         return self.si_sdr(s1, target)

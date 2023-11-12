@@ -14,5 +14,7 @@ class PESQ(BaseMetric):
         self.pesq = PerceptualEvaluationSpeechQuality(fs=16000, mode="wb")
 
     def __call__(self, s1: Tensor, target: Tensor, **kwargs):
-        return self.pesq(s1, target)
+        device = s1.get_device()
+        self.pesq.to(device)
+        return self.pesq(s1, target).sum()
     
