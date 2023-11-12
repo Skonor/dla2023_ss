@@ -15,7 +15,7 @@
   },
   "data": {
     "train": {
-      "batch_size": 4,
+      "batch_size": 3,
       "num_workers": 0,
       "datasets": [
         {
@@ -25,23 +25,23 @@
             "mix_dir": "/kaggle/input/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/mix",
             "ref_dir":  "/kaggle/input/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/refs",
             "target_dir": "/kaggle/input/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/targets",
-            "limit": 4
+            "limit": 3
           }
         }
       ]
     },
     "val": {
-      "batch_size": 4,
+      "batch_size": 3,
       "num_workers": 0,
       "datasets": [
         {
           "type": "CustomDirAudioDataset",
           "args": {
             "is_test": 1,
-            "mix_dir": "/kaggle/input/librispeechmixes/LibriMixes/val/mix",
-            "ref_dir":  "/kaggle/input/librispeechmixes/LibriMixes/val/refs",
-            "target_dir": "/kaggle/input/librispeechmixes/LibriMixes/val/targets",
-            "limit": 4
+            "mix_dir": "/kaggle/input/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/mix",
+            "ref_dir":  "/kaggle/input/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/refs",
+            "target_dir": "/kaggle/input/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/targets",
+            "limit": 3
           }
         }
       ]
