@@ -22,9 +22,9 @@
           "type": "CustomDirAudioDataset",
           "args": {
             "is_test": 0,
-            "mix_dir": "kaggle/input/data/librispeechmixes/Snr0-lufs20-testSmall/mix",
-            "ref_dir":  "kaggle/input/data/librispeechmixes/Snr0-lufs20-testSmall/refs",
-            "target_dir": "kaggle/input/data/librispeechmixes/Snr0-lufs20-testSmall/targets",
+            "mix_dir": "kaggle/input/data/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/mix",
+            "ref_dir":  "kaggle/input/data/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/refs",
+            "target_dir": "kaggle/input/data/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/targets",
             "limit": 3
           }
         }
@@ -38,9 +38,9 @@
           "type": "CustomDirAudioDataset",
           "args": {
             "is_test": 1,
-            "mix_dir": "kaggle/input/data/librispeechmixes/Snr0-lufs20-testSmall/mix",
-            "ref_dir":  "kaggle/input/data/librispeechmixes/Snr0-lufs20-testSmall/refs",
-            "target_dir": "kaggle/input/data/librispeechmixes/Snr0-lufs20-testSmall/targets",
+            "mix_dir": "kaggle/input/data/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/mix",
+            "ref_dir":  "kaggle/input/data/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/refs",
+            "target_dir": "kaggle/input/data/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/targets",
             "limit": 3
           }
         }
