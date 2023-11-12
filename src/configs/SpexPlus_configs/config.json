@@ -1,5 +1,5 @@
 {
-  "name": "one_batch_test",
+  "name": "test config",
   "n_gpu": 1,
   "preprocessing": {
     "sr": 16000
@@ -15,23 +15,37 @@
   },
   "data": {
     "train": {
-      "batch_size": 3,
+      "batch_size": 4,
       "num_workers": 0,
       "datasets": [
         {
           "type": "CustomDirAudioDataset",
           "args": {
             "is_test": 0,
-            "mix_dir": "/kaggle/input/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/mix",
-            "ref_dir":  "/kaggle/input/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/refs",
-            "target_dir": "/kaggle/input/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/targets",
-            "limit": 3
+            "mix_dir": "/kaggle/input/librispeechmixes/LibriMixes/train/mix",
+            "ref_dir":  "/kaggle/input/librispeechmixes/LibriMixes/train/refs",
+            "target_dir": "/kaggle/input/librispeechmixes/LibriMixes/train/targets"
           }
         }
       ]
     },
     "val": {
-      "batch_size": 3,
+      "batch_size": 2,
+      "num_workers": 0,
+      "datasets": [
+        {
+          "type": "CustomDirAudioDataset",
+          "args": {
+            "is_test": 1,
+            "mix_dir": "/kaggle/input/librispeechmixes/LibriMixes/val/mix",
+            "ref_dir":  "/kaggle/input/librispeechmixes/LibriMixes/val/refs",
+            "target_dir": "/kaggle/input/librispeechmixes/LibriMixes/val/targets"
+          }
+        }
+      ]
+    },
+    "public": {
+      "batch_size": 4,
       "num_workers": 0,
       "datasets": [
         {
@@ -40,17 +54,16 @@
             "is_test": 1,
             "mix_dir": "/kaggle/input/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/mix",
             "ref_dir":  "/kaggle/input/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/refs",
-            "target_dir": "/kaggle/input/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/targets",
-            "limit": 3
+            "target_dir": "/kaggle/input/librispeechmixes/LibriMixes/Snr0-lufs20-testSmall/targets"
           }
         }
-      ]
+      ] 
     }
   },
   "optimizer": {
-    "type": "SGD",
+    "type": "Adam",
     "args": {
-      "lr": 1e-2
+      "lr": 1e-3
     }
   },
   "loss": {
@@ -74,23 +87,22 @@
   "lr_scheduler": {
     "type": "OneCycleLR",
     "args": {
-      "steps_per_epoch": 100,
-      "epochs": 10,
+      "steps_per_epoch": 1000, 
+      "epochs": 3,
       "anneal_strategy": "cos",
-      "max_lr": 1e-2,
+      "max_lr": 1e-3,
       "pct_start": 0.2
     }
   },
   "trainer": {
-    "epochs": 10,
+    "epochs": 3,
     "save_dir": "saved/",
     "save_period": 5,
-    "verbosity": 2,
+    "verbosity": 1,
     "monitor": "min val_loss",
-    "early_stop": 100,
     "visualize": "wandb",
     "wandb_project": "ss_project",
-    "len_epoch": 100,
+    "len_epoch": 1000,
     "grad_norm_clip": 10
   }
 }
