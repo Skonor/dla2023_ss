@@ -16,5 +16,6 @@ class PESQ(BaseMetric):
     def __call__(self, s1: Tensor, target: Tensor, **kwargs):
         device = s1.get_device()
         self.pesq.to(device)
+        target = target[:, s1.shape[-1]]
         return self.pesq(s1, target).sum()
     

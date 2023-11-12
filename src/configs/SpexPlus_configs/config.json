@@ -30,7 +30,7 @@
       ]
     },
     "val": {
-      "batch_size": 2,
+      "batch_size": 3,
       "num_workers": 0,
       "datasets": [
         {
@@ -87,7 +87,7 @@
   "lr_scheduler": {
     "type": "OneCycleLR",
     "args": {
-      "steps_per_epoch": 1000, 
+      "steps_per_epoch": 200, 
       "epochs": 3,
       "anneal_strategy": "cos",
       "max_lr": 1e-3,
@@ -102,7 +102,7 @@
     "monitor": "min val_loss",
     "visualize": "wandb",
     "wandb_project": "ss_project",
-    "len_epoch": 1000,
+    "len_epoch": 200,
     "grad_norm_clip": 10
   }
 }
