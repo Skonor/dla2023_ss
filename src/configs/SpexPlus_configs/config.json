@@ -1,5 +1,5 @@
 {
-  "name": "test config",
+  "name": "train spex+ 20000k steps",
   "n_gpu": 1,
   "preprocessing": {
     "sr": 16000
@@ -87,22 +87,22 @@
   "lr_scheduler": {
     "type": "OneCycleLR",
     "args": {
-      "steps_per_epoch": 200, 
-      "epochs": 3,
+      "steps_per_epoch": 2000, 
+      "epochs": 10,
       "anneal_strategy": "cos",
       "max_lr": 1e-3,
       "pct_start": 0.2
     }
   },
   "trainer": {
-    "epochs": 3,
+    "epochs": 10,
     "save_dir": "saved/",
-    "save_period": 5,
-    "verbosity": 1,
+    "save_period": 2,
+    "verbosity": 0,
     "monitor": "min val_loss",
     "visualize": "wandb",
     "wandb_project": "ss_project",
-    "len_epoch": 200,
+    "len_epoch": 2000,
     "grad_norm_clip": 10
   }
 }
