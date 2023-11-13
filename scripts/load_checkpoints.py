@@ -6,6 +6,7 @@ from pathlib import Path
 
 URL_LINKS = {
     'spex_plus_20k': 'https://drive.google.com/uc?id=15PeGox4SLracVLWZF0jkTTVW4cd05Uc8',
+    "spex_plus_finetuned": "https://drive.google.com/uc?id1-dtHqpFPut7020j5SpsJzVWRdTHrvJf6"
 }
 
 def main():
