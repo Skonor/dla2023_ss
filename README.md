@@ -52,15 +52,15 @@ python train.py -c hw_asr/configs/SpexPlus_config/config.json -f saved/checkpoin
 
 For evaluating models on custom dataset do the following:
 
-2. Load checkpoints from training:
+1. Load checkpoints from training:
 ```shell
-python scripts/load_chheckpoints.py
+python scripts/load_checkpoints.py
 ```
 This will create checkpoints dirs is saved/models/ contaning model weigths file and training config.
 
-3. Run test.py (for test-other use librispeech_other.json config instead of librispeech_clean.json):
+2. Run test.py:
 ```shell
-python test.py /librispeech_clean.json -r saved/checkpoints/spex_plus_20k/spex_plus_20k/model_weights.pth -t <your_directory>
+python test.py /librispeech_clean.json -r saved/checkpoints/spex_plus_finetuned/model_weights.pth -t <your_directory>
 ```
 
 This will print out SI-SDR and CER metrics for each of prediction methods
@@ -79,8 +79,8 @@ And after training for another 20k strps:
 
 | data   | SI-SDR        | PESQ           | 
 |--------|---------------|----------------|
-| eval   |  8.24         |     1.92       | 
-| public test |  7.35    |     1.38       |   
+| eval   |  9.70         |     2.07       | 
+| public test |  8.83    |     1.54       |   
 
 ## Credits
 
