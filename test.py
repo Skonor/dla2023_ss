@@ -6,16 +6,19 @@ from pathlib import Path
 import torch
 from tqdm import tqdm
 
-import hw_asr.model as module_model
-from hw_asr.trainer import Trainer
-from hw_asr.utils import ROOT_PATH
-from hw_asr.utils.object_loading import get_dataloaders
-from hw_asr.utils.parse_config import ConfigParser
+import src.model as module_model
+from src.trainer import Trainer
+from src.utils import ROOT_PATH
+from src.utils.object_loading import get_dataloaders
+from src.utils.parse_config import ConfigParser
+
+from src.metric.si_sdr import SI_SDR
+from src.metric.pesq import PESQ
 
 DEFAULT_CHECKPOINT_PATH = ROOT_PATH / "default_test_model" / "checkpoint.pth"
 
 
-def main(config, out_file):
+def main(config):
     logger = config.get_logger("test")
 
     # define cpu or gpu if possible
@@ -42,7 +45,11 @@ def main(config, out_file):
     model = model.to(device)
     model.eval()
 
-    results = []
+    si_sdr_values = []
+    pesq_values = []
+    batch_sizes = []
+    si_sdr = SI_SDR()
+    pesq = PESQ()
 
     with torch.no_grad():
         for batch_num, batch in enumerate(tqdm(dataloaders["test"])):
@@ -52,28 +59,15 @@ def main(config, out_file):
                 batch.update(output)
             else:
                 batch["logits"] = output
-            batch["log_probs"] = torch.log_softmax(batch["logits"], dim=-1)
-            batch["log_probs_length"] = model.transform_input_lengths(
-                batch["spectrogram_length"]
-            )
-            batch["probs"] = batch["log_probs"].exp().cpu()
-            batch["argmax"] = batch["probs"].argmax(-1)
-            lm_preds = text_encoder.ctc_lm_beam_search(batch['log_probs'].cpu(), batch['log_probs_length'].cpu(), beam_size=500) 
-            for i in range(len(batch["text"])):
-                argmax = batch["argmax"][i]
-                argmax = argmax[: int(batch["log_probs_length"][i])]
-                results.append(
-                    {
-                        "ground_truth": batch["text"][i],
-                        "pred_text_argmax": text_encoder.ctc_decode(argmax.cpu().numpy()),
-                        "pred_text_beam_search": text_encoder.ctc_beam_search(
-                            batch["probs"][i], batch["log_probs_length"][i], beam_size=10
-                        )[:10],
-                        "pred_text_lm": lm_preds[i]
-                    }
-                )
-    with Path(out_file).open("w") as f:
-        json.dump(results, f, indent=2)
+            batch_sizes.append(len(batch['target']))
+            si_sdr_values.append(si_sdr(batch).item())
+            pesq_values.append(pesq(batch).item())
+
+    batch_sizes = torch.tensor(batch_sizes)
+    si_sdr_values = torch.tensor(si_sdr_values)
+    pesq_values = torch.tensor(pesq_values)
+    print("SI-SDR:", (si_sdr_values * batch_sizes).sum() / batch_sizes.sum())
+    print("PESQ:", (pesq_values * batch_sizes).sum() / batch_sizes.sum())
 
 
 if __name__ == "__main__":
@@ -98,13 +92,6 @@ if __name__ == "__main__":
         default=None,
         type=str,
         help="indices of GPUs to enable (default: all)",
-    )
-    args.add_argument(
-        "-o",
-        "--output",
-        default="output.json",
-        type=str,
-        help="File to write results (.json)",
     )
     args.add_argument(
         "-t",
@@ -157,10 +144,12 @@ if __name__ == "__main__":
                     {
                         "type": "CustomDirAudioDataset",
                         "args": {
-                            "audio_dir": str(test_data_folder / "audio"),
-                            "transcription_dir": str(
-                                test_data_folder / "transcriptions"
+                            "mix_dir": str(test_data_folder / "mix"),
+                            "ref_dir": str(
+                                test_data_folder / "refs"
                             ),
+                            "target_dir": str(test_data_folder / "targets"),
+                            "is_test": 1
                         },
                     }
                 ],
@@ -171,4 +160,4 @@ if __name__ == "__main__":
     config["data"]["test"]["batch_size"] = args.batch_size
     config["data"]["test"]["n_jobs"] = args.jobs
 
-    main(config, args.output)
+    main(config)
