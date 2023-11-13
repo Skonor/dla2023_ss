@@ -3,10 +3,6 @@
 
 This repo contains framework for SS training with Spex+ (classification head included)
 
-Repo contains following features:
-
-1. Beamsearch and Beamsearch with language model
-2. Noise, Pitch Shift, Gain and TimeStretch augmentations (as well as their random versions)
 
 
 ## Installation guide
