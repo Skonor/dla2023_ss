@@ -17,7 +17,7 @@ pip install -r ./requirements.txt
 
 To load checkpoints run:
 ```shell
-python scripts/load_chheckpoints.py
+python scripts/load_checkpoints.py
 ```
 
 ##Dataset creation:
