@@ -64,8 +64,8 @@ def main(config):
     batch_sizes = torch.tensor(batch_sizes)
     si_sdr_values = torch.tensor(si_sdr_values)
     pesq_values = torch.tensor(pesq_values)
-    print("SI-SDR:", (si_sdr_values * batch_sizes).sum() / batch_sizes.sum())
-    print("PESQ:", (pesq_values * batch_sizes).sum() / batch_sizes.sum())
+    print("SI-SDR:", (si_sdr_values * batch_sizes).sum().item() / batch_sizes.sum().item())
+    print("PESQ:", (pesq_values * batch_sizes).sum().item() / batch_sizes.sum().item())
 
 
 if __name__ == "__main__":
