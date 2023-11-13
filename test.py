@@ -58,8 +58,8 @@ def main(config):
             else:
                 batch["logits"] = output
             batch_sizes.append(len(batch['target']))
-            si_sdr_values.append(si_sdr(batch).item())
-            pesq_values.append(pesq(batch).item())
+            si_sdr_values.append(si_sdr(**batch).item())
+            pesq_values.append(pesq(**batch).item())
 
     batch_sizes = torch.tensor(batch_sizes)
     si_sdr_values = torch.tensor(si_sdr_values)
