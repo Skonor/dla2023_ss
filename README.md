@@ -1,7 +1,7 @@
 
 ## Overview
 
-This repo contains framework for ASR training as well as implemented training and evaluation procedure for DeepSpeech2 on librispeech dataset.
+This repo contains framework for SS training with Spex+ (classification head included)
 
 Repo contains following features:
 
@@ -15,81 +15,76 @@ Repo contains following features:
 pip install -r ./requirements.txt
 ```
 
-To load LM model for beamsearch run:
- ```shell
-python scripts/load_lm.py
- ```
-
 To load checkpoints run:
 ```shell
 python scripts/load_chheckpoints.py
 ```
 
+##Dataset creation:
 
-## Training
-To reproduce training do the following (All training was done on kaggle with librispeech dataset: [insert link])
-
-1. Train DeepSpeech2 on librispeech clean100 and clean360 for 80 epochs (len epoch = 100 steps)
+1. Install train-clean-100 and test-clean parts from librispeech
 
 ```shell
-python train.py -c hw_asr/configs/DeepSpeech2_configs/baseline_clean360.json
+python scripts/load_librispeech.py
 ```
 
-2. Finetune model for 50 epochs on train-other-500:
+2. Creaete 10k (100 speakers) mixes for training and 1k mixes for evaluation
+
+```shell
+python scripts/create_mixes.py
 ```
-python train.py -c hw_asr_configs/DeepSpeech2_configs/finetune_other.json -f saved/checkpoints/DeepSpeech2_clean/model_weights.pth
+This will create train and val directories in directory in data/datasets/LibriMixes, each containig 3 directories mix, refs, targets with audio files.
+
+## Training
+
+To reproduce training do the following (All training was done on kaggle, so you will need to change paths in config)
+
+1. Train for 20k steps (batch size = 3)
+
+```shell
+python train.py -c hw_asr/configs/SpexPlus_config/config.json
+```
+
+2. Finetune model for 20k steps with the same config and dataset:
+```
+python train.py -c hw_asr/configs/SpexPlus_config/config.json -f saved/checkpoints/spex_plus_20k/spex_plus_20k/model_weights.pth
 ```
 
 (Here I used checkpoint loaded by load_checkpoints.py script. You can change -f path to your local weights destination)
 
 ## Evaluation
 
-For evaluating models on librispeech test-clean and test-other do th following:
+For evaluating models on custom dataset do the following:
 
-1. Load LM for beamsearch:
- ```shell
-python scripts/load_lm.py
- ```
-
-2. (Optional) Load checkpoint from training:
+2. Load checkpoints from training:
 ```shell
 python scripts/load_chheckpoints.py
 ```
-This will create DeepSpeech2 in saved/models/checkpoints contaning model weigths file and training config
-
-You can skip this step if you are using you own model
+This will create checkpoints dirs is saved/models/ contaning model weigths file and training config.
 
 3. Run test.py (for test-other use librispeech_other.json config instead of librispeech_clean.json):
 ```shell
-python test.py -b 32 -c hw_asr/configs/test_configs/DeepSpeech2/librispeech_clean.json -r saved/checkpoints/DeepSpeech2_finetuned/model_weights.pth
+python test.py /librispeech_clean.json -r saved/checkpoints/spex_plus_20k/spex_plus_20k/model_weights.pth -t <your_directory>
 ```
 
-This will create output.json file containing argmax, beamsearch (beam_size=10) and LM beamsearch (beam_size=500) predictions
-
-4. Run evaluation.py:
-```shell
-python evaluation.py -o output.json
-```
-This will print out WER and CER metrics for each of prediction methods
+This will print out SI-SDR and CER metrics for each of prediction methods
 
 
 ## Results
 
-For DeepSpeech2 model trained on clean part of the librispeech we get the following results:
+For Spex+ model trained for 20k steps we get the following results:
 
-| Method | test-clean CER| test-clean WER | test-other CER | test-other WER |
-|--------|---------------|----------------|----------------|----------------|
-| Argmax |        8.43   |     26.64      |     24.86      |     57.48      |
-| Beamsearch |  8.23     |     25.90      |     24.35      |     56.37      |
-| LM Beamsearch |  5.80  |     14.45      |     21.12      |     39.35      |
+| data   | SI-SDR        | PESQ           | 
+|--------|---------------|----------------|
+| eval   |  8.24         |     1.92       | 
+| public test |  7.35    |     1.38       |   
 
-And after finetuning on other:
+And after training for another 20k strps:
 
-| Method | test-clean CER| test-clean WER | test-other CER | test-other WER |
-|--------|---------------|----------------|----------------|----------------|
-| Argmax |        7.87   |     24.75      |     18.75      |     46.08      |
-| Beamsearch |  7.63     |     23.82      |     18.25      |     44.66      |
-| LM Beamsearch |  5.41  |     13.30      |     15.01      |     29.18      |
+| data   | SI-SDR        | PESQ           | 
+|--------|---------------|----------------|
+| eval   |  8.24         |     1.92       | 
+| public test |  7.35    |     1.38       |   
 
 ## Credits
 
